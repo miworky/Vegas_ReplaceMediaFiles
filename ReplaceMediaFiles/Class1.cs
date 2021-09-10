@@ -75,9 +75,9 @@ namespace vegastest1
             // みてねからダウンロードした画像ファイルには、Exif はない
 
 
-            
 
-            // Common dialog.
+
+            // ダイアログを開き出力するログのファイルパスをユーザーに選択させる
             string saveFilePath = GetFilePath(vegas.Project.FilePath, "ReplaceMediaFiles");
 
             System.IO.StreamWriter writer = new System.IO.StreamWriter(saveFilePath, false, Encoding.GetEncoding("Shift_JIS"));
