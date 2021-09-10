@@ -1,5 +1,6 @@
 # Vegas_ReplaceMediaFiles
-●概要
+# ●概要
+
 このプログラムは、Vegas Pro 18.0 のプラグインです。  
 このプラグインを使用すると、タイムラインに配置してある「みてねからダウンロードしたメディアファイル」をオリジナルの高解像度のファイルに置き換えます。 
 
@@ -17,7 +18,7 @@ MP4, MOV, JPG
 HEIF
 
 
-●背景
+# ●背景
 
 みてねから画像や動画をダウンロードして動画を作成したり、ブルーレイに焼いたりする際に、いくつか課題があります。
 課題の一つに、みてねにアップロードした画像や動画は、以下のように低解像度に変換されてしまっていることがあります：
@@ -28,12 +29,13 @@ HEIF
 
 せっかくオリジナルの高解像度のファイルが手元にあるのに、低い解像度で動画を作るのは嫌なので、高解像度のファイルに差し替えたいのです。
 
-●動画作成手順
+# ●動画作成手順
 
 1)みてねからファイルをダウンロードする
 
   https://github.com/miworky/miteneDownloader
-  を使ってダウンロードしてください。
+
+  を使用してダウンロードしてください。
   ダウンロードしたファイルは、「YYYY-MM-DDThhmmss_1つめのコメント」というファイル名になります。
   
 2)ダウンロードしたファイルを Vegas Pro のメディアプールに取り込み、タイムラインに貼り付けます。
@@ -42,7 +44,9 @@ HEIF
 
 3)撮影日とコメントをテキストイベントに登録します
 
-　後日公開予定のプラグインを使用すると自動でテキストイベントを追加できます。
+　https://github.com/miworky/Vegas_AddTextEventFromFilename
+
+  を使用すると自動でテキストイベントを追加できます。
 
 4)オリジナルの高解像度のファイルに差し替えます（本プログラムを使用します）
 
@@ -51,11 +55,11 @@ HEIF
 6)動画として書き出したり、ブルーレイに焼いたりします。
 
 
-●開発環境
+# ●開発環境
 
 VisualStudio 2019 C#
 
-●ビルド方法
+# ●ビルド方法
 
 1)ReplaceMediaFiles.sln を VisualStudio2019 で開きます
 
@@ -64,9 +68,10 @@ VisualStudio 2019 C#
 ReplaceMediaFiles\bin\Releaseに成果物ができあがります。
 
 
-●デプロイ方法
+# ●デプロイ方法
 
 C:\ProgramData\VEGAS Pro\Script Menu
+
 に以下のファイルをコピーします：
 
 ReplaceMediaFiles\bin\Release\ReplaceMediaFiles.dll
@@ -76,7 +81,7 @@ ReplaceMediaFiles\bin\Release\MediaInfo.Wrapper.dll
 ReplaceMediaFiles\bin\Release\x64 のファイルすべて
 
 
-●実行方法
+# ●実行方法
 
 1)Vegas Pro 18.0 で、あらかじめ「みてねからダウンロードしたファイル」をタイムラインに配置して、オリジナルのファイルをメディアプールに登録しておきます
 
