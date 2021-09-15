@@ -79,6 +79,10 @@ namespace vegastest1
 
             // ダイアログを開き出力するログのファイルパスをユーザーに選択させる
             string saveFilePath = GetFilePath(vegas.Project.FilePath, "ReplaceMediaFiles");
+            if (saveFilePath.Length == 0)
+            {
+                return;
+            }
 
             System.IO.StreamWriter writer = new System.IO.StreamWriter(saveFilePath, false, Encoding.GetEncoding("Shift_JIS"));
 
