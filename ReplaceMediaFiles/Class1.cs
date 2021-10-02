@@ -127,7 +127,7 @@ namespace vegastest1
 
              // writer.WriteLine(dateTime?.ToString("yyyy/MM/dd HH:mm:ss") + " " + path);
 
-                mediaPoolMedias.Add(Tuple.Create(dateTime.Value, path));;
+                mediaPoolMedias.Add(Tuple.Create(dateTime.Value, path));
             }
 
  //                       writer.Close();
