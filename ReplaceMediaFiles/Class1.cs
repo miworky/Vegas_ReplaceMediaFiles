@@ -123,16 +123,11 @@ namespace vegastest1
                     continue;
                 }
 
-
-
-             // writer.WriteLine(dateTime?.ToString("yyyy/MM/dd HH:mm:ss") + " " + path);
+                // メディアプール内のファイルの撮影日時とパスをログに出力する
+                writer.WriteLine(toString(dateTime, path));
 
                 mediaPoolMedias.Add(Tuple.Create(dateTime.Value, path));
             }
-
- //                       writer.Close();
- //                       MessageBox.Show("終了しました。");
- //                       return;
 
             SearchMedia searchMedia = new SearchMedia(mediaPoolMedias);
 
@@ -181,7 +176,7 @@ namespace vegastest1
                         string alternativeMediaPath = searchMedia.FindMedia(dateTime.Value);
                         if (alternativeMediaPath == "")
                         {
-                            writer.WriteLine("Cannot find " + path);
+                            writer.WriteLine("Cannot find " + toString(dateTime, path));
                             continue;
                         }
 
@@ -591,6 +586,15 @@ namespace vegastest1
         }
 
 
+        private string toString(DateTime? dateTime, string path)
+        {
+            if (dateTime == null)
+            {
+                return path;
+            }
+
+            return dateTime?.ToString("yyyy/MM/dd HH:mm:ss") + " " + path;
+        }
 
     }
 
