@@ -155,13 +155,6 @@ namespace vegastest1
 
                 foreach (TrackEvent trackEvent in track.Events)
                 {
-                    if (trackEvent.Takes.Count != 1)
-                    {
-                        // 複数テイクあるイベントは無視
-                        // （すでにMediaの置き換えが行われているので）
-                        continue;
-                    }
-
                     Take take = trackEvent.Takes[0];
                     {
 
@@ -202,13 +195,7 @@ namespace vegastest1
             {
                 foreach (TrackEvent trackEvent in track.Events)
                 {
-                    if (trackEvent.Takes.Count != 1)
-                    {
-                        // 複数テイクあるイベントは無視
-                        // （すでにMediaの置き換えが行われているので）
-                        continue;
-                    }
-
+ 
                     Take take = trackEvent.Takes[0];
                     {
                         Media media = take.Media;
@@ -232,6 +219,14 @@ namespace vegastest1
                             }
 
                             Take alternativeTake = new Take(mediaStream);
+
+                            // テイクが 1 つのみなら追加、そうでなければ最後のテイクに置き換える
+                            if (trackEvent.Takes.Count != 1)
+                            {
+                                // 複数テイクあるので最後のテイクを消す
+                                int lastIndex = trackEvent.Takes.Count - 1;
+                                trackEvent.Takes.RemoveAt(lastIndex);
+                            }
                             trackEvent.Takes.Add(alternativeTake);
                             trackEvent.ActiveTake = alternativeTake;
 
