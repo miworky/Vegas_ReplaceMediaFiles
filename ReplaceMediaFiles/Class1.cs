@@ -49,16 +49,26 @@ namespace vegastest1
         }
 
         // 日時を指定して画像のパスを取得する
-        public string FindMedia(DateTime dateTime)
+        // ただし、見つかったパスが excludeFilePath でないファイルを探す
+        public string FindMedia(DateTime dateTime, string excludeFilePath)
         {
             foreach (var media in mediaPoolMedias)
             {
                 DateTime thisDateTime = media.Item1;
-                if (thisDateTime.CompareTo(dateTime) == 0)
+                if (thisDateTime.CompareTo(dateTime) != 0)
                 {
-                    // 日時が完全一致するファイルが見つかった
-                    return media.Item2;
+                    continue;
                 }
+
+                // 日時が完全一致するファイルが見つかった
+                string thisFilePath = media.Item2;
+                if (thisFilePath == excludeFilePath)
+                {
+                    // 除外するファイルパスだったので無視
+                    continue;
+                }
+                        
+                return media.Item2;
             }
 
             // なかった
@@ -173,7 +183,7 @@ namespace vegastest1
                         }
 
                         // 同じ撮影日時のファイルをメディアプールから探す
-                        string alternativeMediaPath = searchMedia.FindMedia(dateTime.Value);
+                        string alternativeMediaPath = searchMedia.FindMedia(dateTime.Value, path);
                         if (alternativeMediaPath == "")
                         {
                             writer.WriteLine("Cannot find " + toString(dateTime, path));
