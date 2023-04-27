@@ -48,6 +48,17 @@ namespace vegastest1
             this.mediaPoolMedias = mediaPoolImages;
         }
 
+        public bool IsMiteneFile(string path)
+        {
+            // フルパスからファイル名を取得
+            string fileName = Path.GetFileName(path).ToLower();
+
+            // ファイル名がyyyy-mm-ddThhmmssで始まれば、みてねのファイルとする
+            bool result = Regex.IsMatch(fileName, "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]t[0-9][0-9][0-9][0-9][0-9][0-9]");
+
+            return result;
+        }
+
         // 日時を指定して画像のパスを取得する
         // ただし、見つかったパスが excludeFilePath でないファイルを探す
         public string FindMedia(DateTime dateTime, string excludeFilePath)
@@ -68,6 +79,12 @@ namespace vegastest1
                     continue;
                 }
                         
+                // みてねから DL したファイルは無視
+                if (IsMiteneFile(thisFilePath))
+                {
+                    continue;
+                }
+
                 return media.Item2;
             }
 
@@ -163,6 +180,12 @@ namespace vegastest1
                         if (!IsImage(path) && !IsVideo(path))
                         {
                             // 画像でも動画でもなければ無視
+                            continue;
+                        }
+
+                        // みてねから DL したファイルでなければ何もしない
+                        if (!searchMedia.IsMiteneFile(path))
+                        {
                             continue;
                         }
 
