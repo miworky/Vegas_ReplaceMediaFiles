@@ -61,8 +61,10 @@ namespace vegastest1
 
         // 日時を指定して画像のパスを取得する
         // ただし、見つかったパスが excludeFilePath でないファイルを探す
-        public string FindMedia(DateTime dateTime, string excludeFilePath)
+        public List<string> FindMedia(DateTime dateTime, string excludeFilePath)
         {
+            List<string> founds = new List<string>();
+
             foreach (var media in mediaPoolMedias)
             {
                 DateTime thisDateTime = media.Item1;
@@ -85,11 +87,10 @@ namespace vegastest1
                     continue;
                 }
 
-                return media.Item2;
+                founds.Add( media.Item2 );
             }
 
-            // なかった
-            return "";
+            return founds;
         }
 
     }
@@ -160,7 +161,7 @@ namespace vegastest1
 
             // タイムラインに配置されている画像をみて、メディアプールに同じ日時の画像があるか調べる
             // 同じ日時の画像があれば置き換える
-            Dictionary<string, string> pathPair = new Dictionary<string, string>();
+            Dictionary<string, List<string>> pathPair = new Dictionary<string, List<string>>();
 
             foreach (Track track in vegas.Project.Tracks)
             {
@@ -199,17 +200,23 @@ namespace vegastest1
                         }
 
                         // 同じ撮影日時のファイルをメディアプールから探す
-                        string alternativeMediaPath = searchMedia.FindMedia(dateTime.Value, path);
-                        if (alternativeMediaPath == "")
+                        List<string> alternativeMediaPaths = searchMedia.FindMedia(dateTime.Value, path);
+                        if (alternativeMediaPaths.Count == 0)
                         {
                             writer.WriteLine("Cannot find " + toString(dateTime, path));
                             continue;
                         }
 
                         // 見つかった
-                        writer.WriteLine("Found " + path + " " + alternativeMediaPath);
+                        {
+                            writer.WriteLine("Found " + path);
+                            foreach (string alternativeMediaPath in alternativeMediaPaths)
+                            {
+                                writer.WriteLine("       " + alternativeMediaPath);
+                            }
+                        }
 
-                        pathPair.Add(path, alternativeMediaPath);
+                        pathPair.Add(path, alternativeMediaPaths);
                     }
                 }
             }
@@ -224,35 +231,46 @@ namespace vegastest1
                         Media media = take.Media;
                         string path = media.FilePath; // メディアのファイルパス
 
-                        string alternativeMediaPath = "";
-                        if (pathPair.TryGetValue(path, out alternativeMediaPath))
+                        List<string> alternativeMediaPaths;
+                        if (pathPair.TryGetValue(path, out alternativeMediaPaths))
                         {
-                            // 見つかったファイルをテイクに追加して、アクティブテイクにする
-                            Media alternativeMedia = Media.CreateInstance(vegas.Project, alternativeMediaPath);
-
-                            MediaStream mediaStream;
-
-                            if (track.IsAudio())
+                            // 見つかったファイルをテイクに追加する
+                            // 1つだけみつかったとき：アクティブテイクにする
+                            // 複数見つかった時：アクティブテイクは変更しない
+                            foreach (string alternativeMediaPath in alternativeMediaPaths)
                             {
-                                mediaStream = alternativeMedia.GetAudioStreamByIndex(0);
+                                // すでにそのファイルがテイクにあれば追加しない
+                                if (hasSameMediaPath(trackEvent.Takes, alternativeMediaPath))
+                                {
+                                    continue;
+                                }
+
+                                Media alternativeMedia = Media.CreateInstance(vegas.Project, alternativeMediaPath);
+
+                                MediaStream mediaStream;
+
+                                if (track.IsAudio())
+                                {
+                                    mediaStream = alternativeMedia.GetAudioStreamByIndex(0);
+                                }
+                                else
+                                {
+                                    mediaStream = alternativeMedia.GetVideoStreamByIndex(0);
+                                }
+
+                                Take alternativeTake = new Take(mediaStream);
+                                trackEvent.Takes.Add(alternativeTake);
+
+                                if (alternativeMediaPaths.Count == 1)
+                                {
+                                    trackEvent.ActiveTake = alternativeTake;
+                                }
                             }
-                            else
+
+                            if (alternativeMediaPaths.Count != 1)
                             {
-                                mediaStream = alternativeMedia.GetVideoStreamByIndex(0);
+                                trackEvent.ActiveTake = trackEvent.Takes[0]; // 候補が複数見つかった時はアクティブテイクは変更せずに元からあったテイクをアクティブテイクにする
                             }
-
-                            Take alternativeTake = new Take(mediaStream);
-
-                            // テイクが 1 つのみなら追加、そうでなければ最後のテイクに置き換える
-                            if (trackEvent.Takes.Count != 1)
-                            {
-                                // 複数テイクあるので最後のテイクを消す
-                                int lastIndex = trackEvent.Takes.Count - 1;
-                                trackEvent.Takes.RemoveAt(lastIndex);
-                            }
-                            trackEvent.Takes.Add(alternativeTake);
-                            trackEvent.ActiveTake = alternativeTake;
-
                         }
                     }
                 }
@@ -624,6 +642,18 @@ namespace vegastest1
             return dateTime?.ToString("yyyy/MM/dd HH:mm:ss") + " " + path;
         }
 
+        private bool hasSameMediaPath(Takes takes, string mediaPath)
+        {
+            foreach (Take take in takes)
+            {
+                if (take.MediaPath == mediaPath)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
 }
