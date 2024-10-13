@@ -55,8 +55,9 @@
     <Reference Include="MediaInfo.Wrapper, Version=21.3.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediaInfo.Wrapper.21.3.5\lib\net45\MediaInfo.Wrapper.dll</HintPath>
     </Reference>
-    <Reference Include="ScriptPortal.Vegas">
-      <HintPath>..\..\..\..\..\..\Program Files\VEGAS\VEGAS Pro 18.0\ScriptPortal.Vegas.dll</HintPath>
+    <Reference Include="ScriptPortal.Vegas, Version=19.0.0.381, Culture=neutral, PublicKeyToken=3cda94b1926e6fbc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\VEGAS\VEGAS Pro 21.0\ScriptPortal.Vegas.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -75,9 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ScriptPortal.Vegas.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MediaInfo.Native.21.3.0\build\MediaInfo.Native.targets" Condition="Exists('..\packages\MediaInfo.Native.21.3.0\build\MediaInfo.Native.targets')" />

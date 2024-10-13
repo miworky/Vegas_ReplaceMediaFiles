@@ -148,6 +148,7 @@ namespace vegastest1
                 if (!dateTime.HasValue)
                 {
                     // 撮影日時を取得できなければ無視
+                    writer.WriteLine("ignored" + toString(dateTime, path));
                     continue;
                 }
 
@@ -495,7 +496,23 @@ namespace vegastest1
         private string GetShootingDateTimeImageUsingBitmap(string path)
         {
             // Bitmap として読み込む
-            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(path);
+            System.Drawing.Bitmap bitmap = null;
+            try
+            {
+                bitmap = new System.Drawing.Bitmap(path);
+            }
+            catch (ArgumentException)
+            {
+//                MessageBox.Show("There was an error. Check the path to the image file." + path);
+            }
+            finally
+            {
+            }
+
+            if (bitmap == null)
+            {
+                return null;
+            }
 
             // 撮影日時を取得する
             int[] propertyIdList = bitmap.PropertyIdList;
